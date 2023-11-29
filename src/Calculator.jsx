@@ -8,10 +8,7 @@ const Calculator = () => {
   const handleButtonClick = (value) => {
     if (value === "=") {
       try {
-        // Use parseFloat() to convert the input string to a number
-        // before evaluating it
-        // Enclose the input in parentheses to ensure proper order of operations
-        setResult(parseFloat(eval("(" + input + ")")));
+        setResult(parseFloat(eval(input)));
       } catch (error) {
         setResult("Error");
       }
@@ -19,17 +16,22 @@ const Calculator = () => {
     } else if (value === "C") {
       setInput("");
       setResult("");
+    } else if (value === "backspace") {
+      if (input.length > 0) {
+        setInput(input.slice(0, -1));
+      }
     } else if (value === "(") {
       setInput(input + "(");
     } else if (value === ")") {
-      // Check if there is an opening bracket before the closing bracket
       if (input.includes("(")) {
         setInput(input + ")");
       }
     } else if (value === ".") {
-      // Check if there is already a decimal point in the input
-      if (!input.includes(".")) {
-        setInput(input + value);
+      // Allow multiple decimal points
+      setInput(input + value);
+      // Prevent consecutive decimal points
+      if (input.includes(".") && input.slice(-1) === ".") {
+        setInput(input.slice(0, -1));
       }
     } else {
       setInput(input + value);
@@ -65,13 +67,17 @@ const Calculator = () => {
         <button onClick={() => handleButtonClick("9")}>9</button>
         <button onClick={() => handleButtonClick("*")}>x</button>
         <button onClick={() => handleButtonClick("0")}>0</button>
-        <button onClick={() => handleButtonClick("C")}>C</button>
-
-        <button onClick={() => handleButtonClick("=")}>=</button>
-        <button onClick={() => handleButtonClick("/")}>÷</button>
         <button onClick={() => handleButtonClick("(")}>(</button>
         <button onClick={() => handleButtonClick(")")}>)</button>
+
+        <button onClick={() => handleButtonClick("/")}>÷</button>
+        <button className="c-button" onClick={() => handleButtonClick("C")}>
+          C
+        </button>
+
+        <button onClick={() => handleButtonClick("backspace")}>←</button>
         <button onClick={() => handleButtonClick(".")}>.</button>
+        <button onClick={() => handleButtonClick("=")}>=</button>
       </div>
       <div className="calculator-result">
         <p>{result}</p>
